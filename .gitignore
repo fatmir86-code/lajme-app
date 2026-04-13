@@ -1,0 +1,42 @@
+# Xcode
+build/
+DerivedData/
+*.xcuserdata
+*.xcworkspace
+xcuserdata/
+*.xccheckout
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+.build/
+Packages/
+Package.pins
+Package.resolved
+
+# CocoaPods
+Pods/
+
+# Secrets
+.env
+.env.*
+*.key
+*.pem
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Supabase local
+supabase/.branches
+supabase/.temp
+
+# Export
+ExportOptions.plist
