@@ -1,0 +1,15 @@
+name: Poll RSS Feeds
+on:
+  schedule:
+    - cron: '*/5 * * * *'  # Every 5 minutes
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger RSS Poll
+        run: |
+          curl -s -X POST "https://cgjqcjksdlzoheoyhmwg.supabase.co/functions/v1/poll-rss" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            -H "Content-Type: application/json"
