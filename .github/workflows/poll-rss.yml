@@ -1,7 +1,7 @@
 name: Poll RSS Feeds
 on:
   schedule:
-    - cron: '*/2 * * * *'  # Every 2 minutes
+    - cron: '*/10 * * * *'  # Every 10 minutes
   workflow_dispatch: # Manual trigger
 
 jobs:
