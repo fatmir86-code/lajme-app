@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <!-- Logo 3: Abstract double-headed eagle silhouette as dot above L -->
+  <rect width="320" height="80" fill="white"/>
+
+  <!-- Abstract eagle: two mirrored triangles (wings) above a circle -->
+  <circle cx="44" cy="22" r="5" fill="#D62828"/>
+  <!-- Left wing -->
+  <polygon points="44,27 22,42 38,36" fill="#D62828"/>
+  <!-- Right wing -->
+  <polygon points="44,27 66,42 50,36" fill="#D62828"/>
+  <!-- Body stem -->
+  <rect x="41" y="27" width="6" height="22" rx="3" fill="#D62828"/>
+
+  <!-- LAJME wordmark -->
+  <text x="84" y="50"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="30"
+    font-weight="800"
+    letter-spacing="-0.5"
+    fill="#111111">LAJME</text>
+
+  <!-- Thin underline -->
+  <rect x="84" y="57" width="145" height="2" rx="1" fill="#D62828"/>
+</svg>

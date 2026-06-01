@@ -1,0 +1,24 @@
+App Name: Lajme - Albanian News
+Subtitle: Kosovo & Albania Headlines
+
+Description:
+Lajme brings all Albanian news in one place. Follow headlines from 25+ trusted sources across Kosovo, Albania, North Macedonia, and the diaspora — all in one clean, fast feed.
+
+• Browse the latest headlines from Telegrafi, Gazeta Express, Balkanweb, Klan Kosova, and more
+• Filter by category: Aktuale, Politikë, Ekonomi, Sport, Botë, Kulturë
+• Save articles to read later
+• Search across all sources instantly
+• Share headlines with friends and family
+• Choose light, dark, or system appearance
+• No account required — completely free
+
+Lajme shows only headlines and links to the original source. Tap any article to read the full story on the publisher's website. We drive traffic to news sources, never copy their content.
+
+Built for Albanians worldwide who want to stay informed without visiting 10+ websites.
+
+Keywords: lajme, news, albanian, kosovo, albania, shqip, kosova, shqiperi, nyheter, aggregator
+
+Primary Category: News
+Secondary Category: Reference
+
+Privacy Policy URL: https://fatmir86-code.github.io/lajme-app/privacy.html
