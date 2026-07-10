@@ -40,3 +40,9 @@ supabase/.temp
 
 # Export
 ExportOptions.plist
+
+# fastlane secrets & artifacts
+fastlane/asc_api_key.json
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/README.md

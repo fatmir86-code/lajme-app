@@ -1,10 +1,14 @@
 import SwiftUI
 import SwiftData
 import SafariServices
+import StoreKit
 
 struct ArticleFeedView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.requestReview) private var requestReview
+    @AppStorage("articlesReadCount") private var articlesReadCount: Int = 0
+    @AppStorage("lastReviewRequestVersion") private var lastReviewRequestVersion: String = ""
     @State private var viewModel = ArticleFeedViewModel()
     @State private var searchVM = SearchViewModel()
     @State private var selectedArticleURL: IdentifiableURL?
@@ -140,7 +144,7 @@ struct ArticleFeedView: View {
                     }
                 }
             }
-            .sheet(item: $selectedArticleURL) { item in
+            .sheet(item: $selectedArticleURL, onDismiss: maybeRequestReview) { item in
                 ArticleWebView(url: item.url)
             }
             .confirmationDialog(
@@ -380,6 +384,19 @@ struct ArticleFeedView: View {
         let cutoff = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()
         let predicate = #Predicate<ReadArticle> { $0.readAt < cutoff }
         try? modelContext.delete(model: ReadArticle.self, where: predicate)
+    }
+
+    /// Asks for a rating after the user closes an article — an engaged moment,
+    /// unlike app launch. At most once per app version; the system additionally
+    /// caps prompts at 3 per year, so repeated closes are harmless.
+    private func maybeRequestReview() {
+        articlesReadCount += 1
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0"
+        guard articlesReadCount >= 3, lastReviewRequestVersion != version else { return }
+        lastReviewRequestVersion = version
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            requestReview()
+        }
     }
 }
 

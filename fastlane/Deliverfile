@@ -1,0 +1,39 @@
+# Deliver configuration for Lajme
+app_identifier "com.fatmir.lajme"
+api_key_path "./fastlane/asc_api_key.json"
+
+# Metadata-driven release: binary uploaded separately via xcodebuild
+skip_binary_upload true
+
+# Version to create/update
+app_version "1.1.8"
+
+# Age rating: news app — realistic violence "infrequent/mild" (news imagery),
+# NO unrestricted web access (curated sources only in SFSafariViewController) => 12+
+app_rating_config_path "./fastlane/rating_config.json"
+
+# Replace the (missing) screenshots
+overwrite_screenshots true
+
+# Manual release after approval
+automatic_release false
+
+# Submission info
+submission_information({
+  add_id_info_uses_idfa: false,
+  export_compliance_uses_encryption: false,
+  export_compliance_is_exempt: true
+})
+
+# Don't require sign-in for review
+app_review_information(
+  first_name: "Fatmir",
+  last_name: "Maloku",
+  email_address: "fatmir86@gmail.com",
+  demo_user: "",
+  demo_password: "",
+  notes: "News aggregator for Albanian-language news. Shows only headlines and links; tapping an article opens the original publisher's website in an in-app Safari view. No account required."
+)
+
+force true
+run_precheck_before_submit false

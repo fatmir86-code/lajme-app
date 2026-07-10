@@ -1,7 +1,3 @@
-Emri: Lajme: Albanian News
-Nëntitulli: Lajmet nga Kosova e Shqipëria
-
-Përshkrimi:
 Lajme mbledh titujt më të fundit nga 20+ burime të besueshme shqiptare në një vend të vetëm. Nga Telegrafi dhe Gazeta Express te Balkanweb dhe Koha — lajme nga Kosova, Shqipëria, Maqedonia e Veriut dhe diaspora, në një fluks të pastër dhe të shpejtë.
 
 PSE LAJME?
@@ -17,5 +13,3 @@ PSE LAJME?
 Lajme shfaq vetëm titujt dhe ju çon te burimi origjinal. Trokitni çdo artikull për të lexuar historinë e plotë në faqen e botuesit — ne i drejtojmë lexuesit te mediat shqiptare, kurrë nuk kopjojmë përmbajtjen e tyre.
 
 Ndërtuar për shqiptarët kudo në botë — në Prishtinë, Tiranë, Shkup, apo në diasporë në Gjermani, Zvicër, SHBA e më gjerë — që duan të informohen pa vizituar 10+ faqe interneti.
-
-Fjalëkyçe: shqip,gazeta,portal,prishtina,tirana,maqedoni,diaspora,aktualitet,politike,sporti,bota,kosove
