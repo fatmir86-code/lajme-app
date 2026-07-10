@@ -16,8 +16,20 @@ struct ArticleCardView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Source row: NAME · CATEGORY · TIME                        [share]
+            // Source row: [E FUNDIT] NAME · CATEGORY · TIME             [share]
             HStack(spacing: 4) {
+                if article.isBreaking {
+                    Text("E FUNDIT")
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundStyle(.white)
+                        .tracking(0.5)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(RoundedRectangle(cornerRadius: 4).fill(Color.red))
+                        .padding(.trailing, 4)
+                        .accessibilityLabel("Lajm i fundit")
+                }
+
                 if let sourceName = article.source?.name, !sourceName.isEmpty {
                     Text(sourceName.uppercased())
                         .font(.system(size: 11, weight: .semibold))
