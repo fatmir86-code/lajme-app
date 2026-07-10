@@ -2,7 +2,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @AppStorage("appearanceMode") private var appearanceMode: Int = 0
-    @State private var sourceCount: Int = 23 // 0=system, 1=light, 2=dark
+    @State private var sourceCount: Int?
 
     var body: some View {
         NavigationStack {
@@ -70,7 +70,7 @@ struct SettingsView: View {
                         Image(systemName: "antenna.radiowaves.left.and.right")
                             .font(.system(size: 14))
                             .foregroundStyle(Color(.tertiaryLabel))
-                        Text("\(sourceCount) burime aktive")
+                        Text("\(sourceCount.map(String.init) ?? "20+") burime aktive")
                             .font(.system(size: 14))
                             .foregroundStyle(Color(.secondaryLabel))
                         Spacer()
@@ -104,6 +104,9 @@ struct SettingsView: View {
                     Text("Cilësimet")
                         .font(.system(size: 18, weight: .semibold, design: .serif))
                 }
+            }
+            .task {
+                sourceCount = try? await APIService.shared.fetchSources().sources.count
             }
         }
     }

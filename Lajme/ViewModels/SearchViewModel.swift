@@ -27,6 +27,9 @@ final class SearchViewModel {
             guard !Task.isCancelled else { return }
 
             isSearching = true
+            // Always clear the spinner, even when the task is cancelled
+            // mid-request — otherwise it can get stuck on forever.
+            defer { isSearching = false }
             do {
                 let response = try await api.searchArticles(query: trimmed)
                 guard !Task.isCancelled else { return }
@@ -35,7 +38,6 @@ final class SearchViewModel {
                 guard !Task.isCancelled else { return }
                 results = []
             }
-            isSearching = false
             hasSearched = true
         }
     }

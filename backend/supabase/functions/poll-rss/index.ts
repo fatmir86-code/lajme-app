@@ -1016,19 +1016,12 @@ async function detectBreakingNews(
 }
 
 Deno.serve(async (req) => {
-  // Auth: verify the caller sent the service_role JWT
+  // Auth: the caller must present the actual service-role key. Decoding the
+  // JWT payload and trusting its `role` claim is NOT auth — anyone can forge
+  // an unsigned token claiming service_role. Compare against the real key.
   const authHeader = req.headers.get("Authorization") ?? "";
   const token = authHeader.replace("Bearer ", "");
-  try {
-    // Decode JWT payload and check role
-    const payload = JSON.parse(atob(token.split(".")[1] || ""));
-    if (payload.role !== "service_role") {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-  } catch {
+  if (!SUPABASE_SERVICE_ROLE_KEY || token !== SUPABASE_SERVICE_ROLE_KEY) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
       headers: { "Content-Type": "application/json" },
@@ -1077,40 +1070,8 @@ Deno.serve(async (req) => {
     }, null, 2), { status: 200, headers: { "Content-Type": "application/json" } });
   }
 
-  // Debug endpoint — fetch a URL and return status + snippet
-  if (url.searchParams.get("debug") === "fetch") {
-    const targetUrl = url.searchParams.get("url") ?? "https://top-channel.tv/";
-    const BROWSER_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) " +
-      "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
-    try {
-      const resp = await fetch(targetUrl, {
-        headers: {
-          "User-Agent": BROWSER_UA,
-          "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-          "Accept-Language": "sq,en;q=0.9",
-        },
-        signal: AbortSignal.timeout(15000),
-      });
-      const text = await resp.text();
-      const articleTitleCount = (text.match(/class="articleTitle"/gi) || []).length;
-      return new Response(JSON.stringify({
-        status: resp.status,
-        ok: resp.ok,
-        contentLength: text.length,
-        articleTitleMatches: articleTitleCount,
-        contentSnippet: text.substring(0, 500),
-        headers: Object.fromEntries(resp.headers.entries()),
-      }, null, 2), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      });
-    } catch (err) {
-      return new Response(JSON.stringify({ error: String(err) }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-  }
+  // (debug=fetch removed: a fetch-any-URL endpoint is an SSRF proxy —
+  //  never ship one, even behind auth.)
 
   try {
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);

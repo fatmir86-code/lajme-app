@@ -18,6 +18,9 @@ struct ArticleFeedView: View {
     @State private var showCountryPicker = false
 
     @Query private var readArticles: [ReadArticle]
+    @Query private var bookmarks: [BookmarkedArticle]
+
+    private var bookmarkedIds: Set<String> { Set(bookmarks.map(\.articleId)) }
 
     var body: some View {
         NavigationStack {
@@ -134,6 +137,15 @@ struct ArticleFeedView: View {
                             }
 
                             NavigationLink {
+                                BookmarksView()
+                            } label: {
+                                Image(systemName: "bookmark")
+                                    .font(.system(size: 15, weight: .medium))
+                                    .foregroundStyle(.primary)
+                            }
+                            .accessibilityLabel("Të ruajtura")
+
+                            NavigationLink {
                                 SettingsView()
                             } label: {
                                 Image(systemName: "gearshape")
@@ -164,16 +176,17 @@ struct ArticleFeedView: View {
             .task {
                 readIds = Set(readArticles.map(\.articleId))
                 purgeOldReadArticles()
-                async let cats: () = viewModel.loadCategories()
-                async let arts: () = viewModel.loadArticles()
-                _ = await (cats, arts)
+                // Articles are loaded by the scenePhase task below (which fires
+                // immediately on launch since the scene is already .active) —
+                // loading here as well would double the initial fetch.
+                await viewModel.loadCategories()
             }
             .task(id: scenePhase) {
                 // Auto-refresh loop: fires on every scenePhase change.
                 // When app goes to background, this task is cancelled.
                 // When app returns to foreground, a fresh task starts.
                 guard scenePhase == .active else { return }
-                // Immediate refresh on foreground
+                // Initial load / immediate refresh on foreground
                 await viewModel.refresh()
                 // Then refresh every 120 seconds
                 while !Task.isCancelled {
@@ -254,8 +267,12 @@ struct ArticleFeedView: View {
                                 ArticleCardView(
                                     article: article,
                                     isRead: readIds.contains(article.id),
+                                    isBookmarked: bookmarkedIds.contains(article.id),
                                     onShare: {
                                         shareItem = ShareableArticle(article: article)
+                                    },
+                                    onToggleBookmark: {
+                                        BookmarkService.shared.toggleBookmark(for: article, in: modelContext)
                                     },
                                     onOpenRelated: { related in
                                         openRelated(related, parentArticle: article)
@@ -276,8 +293,21 @@ struct ArticleFeedView: View {
                         ProgressView()
                             .tint(.primary)
                             .padding(20)
+                    } else if viewModel.loadMoreFailed {
+                        Button {
+                            Task { await viewModel.loadMore() }
+                        } label: {
+                            Label("Provo përsëri", systemImage: "arrow.clockwise")
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundStyle(.primary)
+                                .padding(16)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
+            }
+            .refreshable {
+                await viewModel.refresh()
             }
             .scrollContentBackground(.hidden)
             .background(Color.appBackground)
@@ -290,13 +320,34 @@ struct ArticleFeedView: View {
     private var searchContent: some View {
         if searchVM.query.isEmpty {
             Spacer()
-            VStack(spacing: 8) {
-                Image(systemName: "magnifyingglass")
-                    .font(.system(size: 28))
-                    .foregroundStyle(Color(.tertiaryLabel))
-                Text("Shkruaj për të kërkuar lajme")
-                    .font(.system(size: 14))
-                    .foregroundStyle(Color(.secondaryLabel))
+            VStack(spacing: 16) {
+                VStack(spacing: 8) {
+                    Image(systemName: "magnifyingglass")
+                        .font(.system(size: 28))
+                        .foregroundStyle(Color(.tertiaryLabel))
+                    Text("Shkruaj për të kërkuar lajme")
+                        .font(.system(size: 14))
+                        .foregroundStyle(Color(.secondaryLabel))
+                }
+
+                // Suggested searches so the empty state isn't a dead end
+                FlowLayout(spacing: 8) {
+                    ForEach(["Kosova", "Shqipëria", "Zgjedhjet", "Futboll", "Ekonomia", "Diaspora"], id: \.self) { term in
+                        Button {
+                            searchVM.query = term
+                            searchVM.search()
+                        } label: {
+                            Text(term)
+                                .font(.system(size: 13, weight: .medium))
+                                .foregroundStyle(.primary)
+                                .padding(.horizontal, 14)
+                                .padding(.vertical, 7)
+                                .background(Capsule().fill(Color(.systemGray6)))
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(.horizontal, 40)
             }
             Spacer()
         } else if searchVM.isSearching {
@@ -321,8 +372,12 @@ struct ArticleFeedView: View {
                             ArticleCardView(
                                 article: article,
                                 isRead: readIds.contains(article.id),
+                                isBookmarked: bookmarkedIds.contains(article.id),
                                 onShare: {
                                     shareItem = ShareableArticle(article: article)
+                                },
+                                onToggleBookmark: {
+                                    BookmarkService.shared.toggleBookmark(for: article, in: modelContext)
                                 }
                             )
                             Divider().padding(.horizontal, 20)

@@ -3,7 +3,9 @@ import SwiftUI
 struct ArticleCardView: View {
     let article: Article
     var isRead: Bool = false
+    var isBookmarked: Bool = false
     let onShare: () -> Void
+    var onToggleBookmark: (() -> Void)? = nil
     var onOpenRelated: ((RelatedSource) -> Void)? = nil
 
     /// Filter HTTP image URLs to avoid silent ATS failures.
@@ -44,6 +46,21 @@ struct ArticleCardView: View {
 
                 Spacer()
 
+                if let onToggleBookmark {
+                    Button {
+                        HapticManager.light()
+                        onToggleBookmark()
+                    } label: {
+                        Image(systemName: isBookmarked ? "bookmark.fill" : "bookmark")
+                            .font(.system(size: 14))
+                            .foregroundStyle(isBookmarked ? Color.primary : Color(.tertiaryLabel))
+                            .frame(width: 44, height: 44)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(isBookmarked ? "Hiq nga të ruajturat" : "Ruaj lajmin")
+                }
+
                 Button {
                     onShare()
                 } label: {
@@ -70,26 +87,10 @@ struct ArticleCardView: View {
                     .layoutPriority(1)
 
                 if let imageUrl = httpsImageURL {
-                    AsyncImage(url: imageUrl, transaction: Transaction(animation: .easeIn(duration: 0.2))) { phase in
-                        switch phase {
-                        case .empty:
-                            RoundedRectangle(cornerRadius: 6)
-                                .fill(Color(.systemGray6))
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                        case .failure:
-                            // Subtle gray placeholder so layout doesn't shift between cards
-                            RoundedRectangle(cornerRadius: 6)
-                                .fill(Color(.systemGray6))
-                        @unknown default:
-                            Color(.systemGray6)
-                        }
-                    }
-                    .frame(width: 84, height: 84)
-                    .clipShape(RoundedRectangle(cornerRadius: 6))
-                    .accessibilityHidden(true)
+                    CachedAsyncImage(url: imageUrl)
+                        .frame(width: 84, height: 84)
+                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                        .accessibilityHidden(true)
                 }
             }
             .padding(.bottom, 8)

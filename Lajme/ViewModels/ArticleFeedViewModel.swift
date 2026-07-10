@@ -17,6 +17,7 @@ final class ArticleFeedViewModel {
     var isLoadingMore = false
     var error: String?
     var hasMore = true
+    var loadMoreFailed = false
 
     private var currentPage = 1
     private let api = APIService.shared
@@ -33,6 +34,7 @@ final class ArticleFeedViewModel {
     func loadArticles() async {
         isLoading = true
         error = nil
+        loadMoreFailed = false
         currentPage = 1
 
         let category = selectedCategory
@@ -58,6 +60,7 @@ final class ArticleFeedViewModel {
     func loadMore() async {
         guard !isLoadingMore, !isLoading, hasMore else { return }
         isLoadingMore = true
+        loadMoreFailed = false
 
         let nextPage = currentPage + 1
         let category = selectedCategory
@@ -78,8 +81,11 @@ final class ArticleFeedViewModel {
             articles.append(contentsOf: newArticles)
             currentPage = nextPage
             hasMore = response.hasMore ?? false
+        } catch is CancellationError {
+            // Ignore
         } catch {
-            // Silent fail
+            // Surface a retry affordance instead of silently looping on scroll
+            loadMoreFailed = true
         }
 
         isLoadingMore = false

@@ -6,6 +6,7 @@ final class BookmarkedArticle {
     @Attribute(.unique) var articleId: String
     var title: String
     var articleUrl: String
+    var imageUrl: String?
     var publishedAt: Date
     var categorySlug: String?
     var sourceName: String
@@ -16,6 +17,7 @@ final class BookmarkedArticle {
         self.articleId = article.id
         self.title = article.title
         self.articleUrl = article.articleUrl
+        self.imageUrl = article.imageUrl
         self.publishedAt = article.publishedAt
         self.categorySlug = article.categorySlug
         self.sourceName = article.source?.name ?? ""
@@ -28,7 +30,7 @@ final class BookmarkedArticle {
             id: articleId,
             title: title,
             articleUrl: articleUrl,
-            imageUrl: nil,
+            imageUrl: imageUrl,
             publishedAt: publishedAt,
             categorySlug: categorySlug,
             isBreaking: false,

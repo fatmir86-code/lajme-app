@@ -15,7 +15,13 @@ struct LajmeApp: App {
             do {
                 container = try ModelContainer(for: BookmarkedArticle.self, ReadArticle.self)
             } catch {
-                fatalError("Failed to init ModelContainer: \(error)")
+                // Last resort: run on an in-memory store so the app still works
+                // (bookmarks/read-state won't persist this session, but no crash).
+                let config = ModelConfiguration(isStoredInMemoryOnly: true)
+                container = try! ModelContainer(
+                    for: BookmarkedArticle.self, ReadArticle.self,
+                    configurations: config
+                )
             }
         }
     }
