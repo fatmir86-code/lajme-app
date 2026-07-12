@@ -1,2 +1,5 @@
-• Neue App-Store-Bilder
-• Schnellere Ladezeiten und Fehlerbehebungen
+• Nachrichten für später speichern (Lesezeichen)
+• Homescreen-Widget mit den neuesten Schlagzeilen
+• „E fundit"-Kennzeichnung für Eilmeldungen
+• Zum Aktualisieren ziehen, schnellere Suche mit Bild-Cache
+• Verschiedene Verbesserungen

@@ -1,2 +1,5 @@
-• Pamje të reja në App Store
-• Përmirësime të shpejtësisë dhe rregullime gabimesh
+• Ruani lajmet për t'i lexuar më vonë (të ruajtura)
+• Widget në ekranin kryesor me titujt e fundit
+• Etiketa "E fundit" për lajmet e nxehta
+• Tërhiq për të rifreskuar, kërkim më i shpejtë me imazhe të ruajtura
+• Rregullime të ndryshme
